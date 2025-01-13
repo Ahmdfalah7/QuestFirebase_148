@@ -33,8 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.firebase.model.Mahasiswa
+import com.example.firebase.ui.viewmodel.HomeMhsViewModel
 import com.example.firebase.ui.viewmodel.HomeUiState
-import com.example.firebase.ui.viewmodel.HomeViewModel
 import com.example.firebase.ui.viewmodel.PenyediaViewModel
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
@@ -44,11 +44,10 @@ fun HomeScreen(
     navigateToltemEntry: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit = {},
-    viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: HomeMhsViewModel = viewModel(factory = PenyediaViewModel.Factory),
 ) {
 
     Scaffold(
-
         topBar = {
             TopAppBar(
                 title = { Text(text = "Home") })
@@ -59,16 +58,17 @@ fun HomeScreen(
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(18.dp)
             ){
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Kontak")
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Mahasiswa")
             }
         },
     ){ innerPadding ->
         HomeStatus(
-            homeUiState = viewModel.mhsUIState,
+            homeUiState = viewModel.mhsUiState,
             retryAction = { viewModel.getMhs() },
             modifier = Modifier.padding(innerPadding),
-            onDetailClick = onDetailClick, onDeleteClick = {
-                viewModel.getMhs()
+            onDetailClick = onDetailClick,
+            onDeleteClick = {
+                viewModel.deleteMhs(it)
             }
         )
     }
@@ -88,7 +88,7 @@ fun HomeStatus(
         is HomeUiState.Success ->
             if (homeUiState.mahasiswa.isEmpty()) {
                 return Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = "Tidak ada data Kontak")
+                    Text(text = "Tidak ada data Mahasiswa")
                 }
             } else {
                 MhsLayout(
@@ -148,15 +148,15 @@ fun MhsLayout(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(mahasiswa){kontak ->
+        items(mahasiswa){mahasiswa ->
             MhsCard(
-                mahasiswa = kontak,
+                mahasiswa = mahasiswa,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        onDetailClick(kontak)},
+                        onDetailClick(mahasiswa)},
                 onDeleteClick = {
-                    onDeleteClick(kontak)
+                    onDeleteClick(mahasiswa)
                 }
             )
         }
