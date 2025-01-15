@@ -14,11 +14,11 @@ class NetworkMahasiswaRepository(
 
     override suspend fun getMahasiswa(): Flow<List<Mahasiswa>> = callbackFlow {
         val mhsCollection = firestore.collection("Mahasiswa")
-            .orderBy("nama", Query.Direction.DESCENDING)
+            .orderBy("nim", Query.Direction.DESCENDING)
             .addSnapshotListener { value, error ->
                 if (value != null) {
                     val mhsList = value.documents.mapNotNull {
-                        it.toObject(Mahasiswa::class.java)!!
+                        it.toObject(Mahasiswa::class.java)
                     }
                     trySend(mhsList) // Kirim data mahasiswa ke subscriber
                 }
@@ -58,16 +58,24 @@ class NetworkMahasiswaRepository(
     }
 
     override suspend fun getMahasiswabyNim(nim: String): Flow<Mahasiswa> = callbackFlow{
-        val mhsDocument = firestore.collection("Mahasiswa")
-            .document(nim)
+        val mhsCollection = firestore.collection("Mahasiswa")
+            .whereEqualTo("nim", nim) // Mencari dokumen yang field nim sesuai
             .addSnapshotListener { value, error ->
-                if (value != null) {
-                    val mhs = value.toObject(Mahasiswa::class.java)!!
-                    trySend(mhs)
+                if (error != null) {
+                    close(error) // Tangani kesalahan
+                } else {
+                    value?.documents?.let { documents ->
+                        // Ambil mahasiswa dari dokumen yang ditemukan
+                        val mahasiswa = documents.firstOrNull()?.toObject(Mahasiswa::class.java)
+                        mahasiswa?.let {
+                            trySend(it) // Kirim data mahasiswa
+                        } ?: close(Exception("Mahasiswa tidak ditemukan"))
+                    }
                 }
             }
+
         awaitClose {
-            mhsDocument.remove()
+            mhsCollection.remove()
         }
     }
 }

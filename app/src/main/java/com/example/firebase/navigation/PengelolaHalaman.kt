@@ -5,9 +5,12 @@ import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.firebase.ui.view.DetailMhsView
 import com.example.firebase.ui.view.HomeScreen
 import com.example.firebase.ui.view.InsertMhsView
 
@@ -37,6 +40,24 @@ fun PengelolaHalaman(
                     navController.navigate(DestinasiHome.route)
                 }
             )
+        }
+        composable(
+            DestinasiDetail.routesWithArg,
+            arguments = listOf(
+                navArgument(DestinasiDetail.NIM) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val nim =
+                backStackEntry.arguments?.getString(DestinasiDetail.NIM)
+
+            nim?.let {
+                DetailMhsView(
+                    nim = nim,
+                    onBack = { navController.popBackStack() },
+                )
+            }
         }
     }
 }

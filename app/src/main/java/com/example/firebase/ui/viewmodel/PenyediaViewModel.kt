@@ -3,6 +3,7 @@ package com.example.firebase.ui.viewmodel
 import android.os.Build
 import androidx.annotation.RequiresExtension
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -14,8 +15,14 @@ object PenyediaViewModel {
         initializer {
             HomeMhsViewModel(MahasiswaApplications().container.mahasiswaRepository)}
         initializer{
-            InsertMhsViewModel(MahasiswaApplications().container.mahasiswaRepository)
+            InsertMhsViewModel(MahasiswaApplications().container.mahasiswaRepository) }
+        initializer{
+            DetailMhsViewModel(
+                createSavedStateHandle(),
+                MahasiswaApplications().container.mahasiswaRepository
+            )
         }
+
     }
 }
 fun CreationExtras.MahasiswaApplications() : MahasiswaApplications =

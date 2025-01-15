@@ -87,7 +87,7 @@ fun HomeStatus(
 
         is HomeUiState.Success ->
             if (homeUiState.mahasiswa.isEmpty()) {
-                return Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                 Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(text = "Tidak ada data Mahasiswa")
                 }
             } else {
@@ -200,11 +200,11 @@ fun MhsCard(
                 )
             }
             Text(
-                text = mahasiswa.kelas,
+                text = mahasiswa.alamat,
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = mahasiswa.alamat,
+                text = mahasiswa.judul_skripsi,
                 style = MaterialTheme.typography.titleMedium
             )
         }

@@ -6,7 +6,9 @@ data class Mahasiswa (
     val jenis_kelamin: String,
     val kelas: String,
     val alamat: String,
-    val angkatan: String
+    val angkatan: String,
+    val judul_skripsi: String,
+    val dosen_pembimbing: String
 ){
-    constructor(): this("","","","","","")
+    constructor(): this("","","","","","","","")
 }
